@@ -9,54 +9,90 @@ export component Sidebar inherits Rectangle {
     callback topic-selected(int);
     callback new-topic();
 
-    width: 240px;
-    background: #111111;
+    width: 260px;
+    background: #f9f9f9;
 
     VerticalLayout {
-        padding: 12px;
-        spacing: 4px;
+        padding: 8px;
+        spacing: 2px;
 
-        // 新建对话按钮
+        // Header
         Rectangle {
-            height: 36px;
-            background: #2563eb;
-            border-radius: 8px;
-
-            TouchArea {
-                clicked => { root.new-topic(); }
-            }
-
-            Text {
-                text: "+ 新建对话";
-                color: #ffffff;
-                font-size: 13px;
-                horizontal-alignment: center;
-                vertical-alignment: center;
+            height: 48px;
+            HorizontalLayout {
+                padding-left: 12px;
+                alignment: center;
+                Text {
+                    text: "Slint Chat";
+                    color: #0d0d0d;
+                    font-size: 15px;
+                    font-weight: 600;
+                }
             }
         }
 
-        Rectangle { height: 8px; }
+        // New chat button
+        new-btn-ta := TouchArea {
+            height: 40px;
+            clicked => { root.new-topic(); }
 
-        // Topic 列表
-        for topic[i] in root.topics : Rectangle {
-            height: 36px;
-            background: root.active-index == i ? #2a2a3e : transparent;
-            border-radius: 6px;
+            Rectangle {
+                background: new-btn-ta.has-hover ? #efefef : transparent;
+                border-radius: 8px;
 
-            TouchArea {
-                clicked => {
-                    root.active-index = i;
-                    root.topic-selected(i);
+                HorizontalLayout {
+                    padding-left: 12px;
+                    spacing: 10px;
+                    alignment: center;
+
+                    Text {
+                        text: "✏";
+                        font-size: 15px;
+                        color: #0d0d0d;
+                        vertical-alignment: center;
+                    }
+                    Text {
+                        text: "新建对话";
+                        color: #0d0d0d;
+                        font-size: 14px;
+                        vertical-alignment: center;
+                    }
                 }
             }
+        }
 
-            Text {
-                text: topic.title;
-                color: root.active-index == i ? #ffffff : #aaaaaa;
-                font-size: 13px;
-                overflow: elide;
-                padding-left: 10px;
-                vertical-alignment: center;
+        Rectangle { height: 4px; }
+
+        Text {
+            text: "最近对话";
+            color: #9ca3af;
+            font-size: 11px;
+            padding-left: 12px;
+            padding-bottom: 2px;
+        }
+
+        for topic[i] in root.topics : item-ta := TouchArea {
+            height: 36px;
+            clicked => {
+                root.active-index = i;
+                root.topic-selected(i);
+            }
+
+            Rectangle {
+                background: root.active-index == i ? #e8e8e8
+                          : item-ta.has-hover ? #efefef
+                          : transparent;
+                border-radius: 8px;
+
+                Text {
+                    text: topic.title;
+                    color: #0d0d0d;
+                    font-size: 14px;
+                    overflow: elide;
+                    padding-left: 12px;
+                    padding-right: 8px;
+                    vertical-alignment: center;
+                }
             }
         }
     }

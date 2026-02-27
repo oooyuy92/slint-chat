@@ -19,95 +19,108 @@ export component InputBar inherits Rectangle {
 
     property <string> input-text: "";
 
-    height: 88px;
-    background: #111111;
-    border-color: #333333;
+    background: #ffffff;
+    border-color: #e5e5e5;
     border-width: 1px;
 
     VerticalLayout {
-        // token 进度条（在输入区上方）
+        // Token progress bar
         Rectangle {
-            height: 4px;
-            background: #222;
-
+            height: 2px;
+            background: #f4f4f4;
             Rectangle {
                 width: root.token-ratio * parent.width;
-                height: 4px;
+                height: 2px;
                 x: 0;
-                background: root.token-ratio < 0.6 ? #22c55e
+                background: root.token-ratio < 0.6 ? #10a37f
                           : root.token-ratio < 0.85 ? #f59e0b
                           : #ef4444;
             }
         }
 
         HorizontalLayout {
-            padding: 12px;
-            spacing: 8px;
+            alignment: center;
+            padding-top: 12px;
+            padding-bottom: 16px;
+            padding-left: 16px;
+            padding-right: 16px;
 
-            TextEdit {
-                text <=> root.input-text;
-                enabled: !root.sending;
-                placeholder-text: "输入消息，Enter 发送，Shift+Enter 换行，/ 快捷短语";
-                font-size: 14px;
-
-                key-pressed(event) => {
-                    if event.text == "/" {
-                        root.show-phrases = true;
-                    } else if event.text == "\n" && !event.modifiers.shift {
-                        root.show-phrases = false;
-                        if root.input-text != "" {
-                            root.send(root.input-text);
-                            root.input-text = "";
-                        }
-                        return accept;
-                    } else {
-                        root.show-phrases = false;
-                    }
-                    return reject;
-                }
-            }
-
-            // 对比按钮
             Rectangle {
-                width: 52px;
-                background: root.parallel-mode ? #2563eb : #333333;
-                border-radius: 8px;
+                max-width: 768px;
+                horizontal-stretch: 1;
+                background: #ffffff;
+                border-radius: 16px;
+                border-width: 1px;
+                border-color: #e5e5e5;
+                drop-shadow-blur: 8px;
+                drop-shadow-color: #0000000a;
+                drop-shadow-offset-y: 2px;
 
-                TouchArea {
-                    clicked => {
-                        root.toggle-parallel();
+                HorizontalLayout {
+                    padding-left: 16px;
+                    padding-right: 8px;
+                    padding-top: 8px;
+                    padding-bottom: 8px;
+                    spacing: 8px;
+                    alignment: center;
+
+                    // Parallel mode toggle
+                    parallel-ta := TouchArea {
+                        width: 32px;
+                        height: 32px;
+                        clicked => { root.toggle-parallel(); }
+
+                        Rectangle {
+                            background: root.parallel-mode ? #10a37f
+                                      : parallel-ta.has-hover ? #f4f4f4
+                                      : transparent;
+                            border-radius: 8px;
+
+                            Text {
+                                text: "⊞";
+                                color: root.parallel-mode ? #ffffff : #9ca3af;
+                                font-size: 16px;
+                                horizontal-alignment: center;
+                                vertical-alignment: center;
+                            }
+                        }
                     }
-                }
 
-                Text {
-                    text: "对比";
-                    color: root.parallel-mode ? #ffffff : #aaaaaa;
-                    font-size: 13px;
-                    horizontal-alignment: center;
-                    vertical-alignment: center;
-                }
-            }
+                    TextEdit {
+                        text <=> root.input-text;
+                        enabled: !root.sending;
+                        placeholder-text: "发消息给 Slint Chat";
+                        font-size: 15px;
+                        horizontal-stretch: 1;
 
-            VerticalLayout {
-                width: 60px;
-                spacing: 4px;
-                alignment: center;
+                        key-pressed(event) => {
+                            if event.text == "/" {
+                                root.show-phrases = true;
+                            } else if event.text == "\n" && !event.modifiers.shift {
+                                root.show-phrases = false;
+                                if root.input-text != "" {
+                                    root.send(root.input-text);
+                                    root.input-text = "";
+                                }
+                                return accept;
+                            } else {
+                                root.show-phrases = false;
+                            }
+                            return reject;
+                        }
+                    }
 
-                // token 数字显示
-                Text {
-                    text: root.token-used + "/" + root.token-max;
-                    color: #666666;
-                    font-size: 11px;
-                    horizontal-alignment: center;
-                }
+                    Text {
+                        text: root.token-used + "/" + root.token-max;
+                        color: #9ca3af;
+                        font-size: 11px;
+                        vertical-alignment: center;
+                    }
 
-                // 发送按钮
-                Rectangle {
-                    height: 36px;
-                    background: root.sending ? #444444 : #2563eb;
-                    border-radius: 8px;
-
-                    TouchArea {
+                    // Send button
+                    send-ta := TouchArea {
+                        width: 34px;
+                        height: 34px;
                         enabled: !root.sending;
                         clicked => {
                             if root.input-text != "" {
@@ -115,25 +128,31 @@ export component InputBar inherits Rectangle {
                                 root.input-text = "";
                             }
                         }
-                    }
 
-                    Text {
-                        text: root.sending ? "..." : "发送";
-                        color: #ffffff;
-                        font-size: 13px;
-                        horizontal-alignment: center;
-                        vertical-alignment: center;
+                        Rectangle {
+                            background: root.sending ? #d1d5db
+                                      : root.input-text == "" ? #d1d5db
+                                      : #0d0d0d;
+                            border-radius: 17px;
+
+                            Text {
+                                text: root.sending ? "…" : "↑";
+                                color: #ffffff;
+                                font-size: 16px;
+                                horizontal-alignment: center;
+                                vertical-alignment: center;
+                            }
+                        }
                     }
                 }
             }
         }
     }
 
-    // 快捷短语面板（浮在输入栏上方）
     if root.show-phrases : QuickPhrasePanel {
         phrases: root.phrases;
-        x: 12px;
-        y: - self.preferred-height - 4px;
+        x: 16px;
+        y: -self.preferred-height - 8px;
         select(content) => {
             root.input-text = content;
             root.show-phrases = false;

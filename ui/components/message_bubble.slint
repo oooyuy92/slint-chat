@@ -9,27 +9,55 @@ export struct MessageItem {
 export component MessageBubble {
     in property <MessageItem> message;
 
-    HorizontalLayout {
-        alignment: root.message.is-user ? end : start;
-        padding-left: root.message.is-user ? 60px : 0px;
-        padding-right: root.message.is-user ? 0px : 60px;
+    // User message: right-aligned pill bubble
+    if root.message.is-user : HorizontalLayout {
+        alignment: end;
+        padding-left: 80px;
 
         Rectangle {
-            background: root.message.is-user ? #2563eb : #1e1e2e;
-            border-radius: 12px;
-            padding: 12px;
-            max-width: 480px;
+            background: #f4f4f4;
+            border-radius: 18px;
+            padding-top: 10px;
+            padding-bottom: 10px;
+            padding-left: 16px;
+            padding-right: 16px;
+            max-width: 520px;
 
-            if root.message.is-user : Text {
+            Text {
                 text: root.message.content;
                 wrap: word-wrap;
-                color: #ffffff;
-                font-size: 14px;
+                color: #0d0d0d;
+                font-size: 15px;
             }
+        }
+    }
 
-            if !root.message.is-user : MarkdownView {
-                blocks: root.message.blocks;
+    // AI message: avatar + markdown, no bubble
+    if !root.message.is-user : HorizontalLayout {
+        alignment: start;
+        spacing: 12px;
+        padding-right: 80px;
+
+        Rectangle {
+            width: 28px;
+            height: 28px;
+            background: #10a37f;
+            border-radius: 6px;
+            vertical-stretch: 0;
+
+            Text {
+                text: "AI";
+                color: #ffffff;
+                font-size: 10px;
+                font-weight: 700;
+                horizontal-alignment: center;
+                vertical-alignment: center;
             }
+        }
+
+        MarkdownView {
+            blocks: root.message.blocks;
+            horizontal-stretch: 1;
         }
     }
 }

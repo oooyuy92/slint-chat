@@ -18,73 +18,66 @@ export component MarkdownView {
     in property <[MarkdownBlock]> blocks;
 
     VerticalLayout {
-        spacing: 6px;
+        spacing: 8px;
         alignment: start;
 
         for block[i] in root.blocks : Rectangle {
-            // --- 段落 ---
             if block.block-type == BlockType.Paragraph : Text {
                 text: block.text;
                 wrap: word-wrap;
-                color: #d4d4d4;
-                font-size: 14px;
+                color: #374151;
+                font-size: 15px;
             }
 
-            // --- H1 ---
             if block.block-type == BlockType.Heading1 : Text {
                 text: block.text;
                 wrap: word-wrap;
-                color: #ffffff;
+                color: #111827;
                 font-size: 22px;
                 font-weight: 700;
             }
 
-            // --- H2 ---
             if block.block-type == BlockType.Heading2 : Text {
                 text: block.text;
                 wrap: word-wrap;
-                color: #eeeeee;
+                color: #1f2937;
                 font-size: 18px;
                 font-weight: 700;
             }
 
-            // --- H3 ---
             if block.block-type == BlockType.Heading3 : Text {
                 text: block.text;
                 wrap: word-wrap;
-                color: #dddddd;
+                color: #374151;
                 font-size: 16px;
                 font-weight: 600;
             }
 
-            // --- 列表项 ---
             if block.block-type == BlockType.ListItem : HorizontalLayout {
-                spacing: 6px;
+                spacing: 8px;
                 alignment: start;
-                Text { text: "•"; color: #888; font-size: 14px; }
+                Text { text: "•"; color: #6b7280; font-size: 15px; }
                 Text {
                     text: block.text;
                     wrap: word-wrap;
-                    color: #d4d4d4;
-                    font-size: 14px;
+                    color: #374151;
+                    font-size: 15px;
                 }
             }
 
-            // --- 代码块 ---
             if block.block-type == BlockType.CodeBlock : Rectangle {
-                background: #1e1e2e;
-                border-radius: 6px;
+                background: #f4f4f4;
+                border-radius: 8px;
                 border-width: 1px;
-                border-color: #333;
+                border-color: #e5e5e5;
 
                 VerticalLayout {
-                    padding: 12px;
+                    padding: 14px;
                     spacing: 4px;
 
-                    // 语言标签（有 lang 时显示）
                     if block.lang != "" : Text {
                         text: block.lang;
-                        color: #888;
+                        color: #9ca3af;
                         font-size: 11px;
                     }
 
@@ -92,16 +85,15 @@ export component MarkdownView {
                         text: block.text;
                         font-family: "monospace";
                         font-size: 13px;
-                        color: #cdd6f4;
+                        color: #1f2937;
                         wrap: no-wrap;
                     }
                 }
             }
 
-            // --- 分割线 ---
             if block.block-type == BlockType.HorizontalRule : Rectangle {
                 height: 1px;
-                background: #444;
+                background: #e5e5e5;
             }
         }
     }
