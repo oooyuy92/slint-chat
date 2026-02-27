@@ -4,11 +4,14 @@ import { TopicItem, Sidebar } from "sidebar.slint";
 import { ChatView } from "chat_view.slint";
 import { InputBar } from "input_bar.slint";
 
+import "./fonts/NotoSansSC-subset.ttf";
+
 export component AppWindow inherits Window {
     title: "Slint Chat";
     width: 1000px;
     height: 700px;
     background: #0d0d0d;
+    default-font-family: "Noto Sans CJK SC";
 
     in-out property <[TopicItem]> topics <=> sidebar.topics;
     in-out property <[MessageItem]> messages <=> chat.messages;
