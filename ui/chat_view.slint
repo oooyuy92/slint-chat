@@ -31,20 +31,16 @@ export component ChatView inherits Rectangle {
         }
 
         if root.messages.length > 0 : ScrollView {
-            HorizontalLayout {
-                alignment: center;
+            VerticalLayout {
+                padding-left: 24px;
+                padding-right: 24px;
+                padding-top: 24px;
+                padding-bottom: 24px;
+                spacing: 24px;
+                alignment: start;
 
-                VerticalLayout {
-                    max-width: 768px;
-                    horizontal-stretch: 1;
-                    padding-top: 24px;
-                    padding-bottom: 24px;
-                    spacing: 24px;
-                    alignment: start;
-
-                    for msg in root.messages : MessageBubble {
-                        message: msg;
-                    }
+                for msg in root.messages : MessageBubble {
+                    message: msg;
                 }
             }
         }
