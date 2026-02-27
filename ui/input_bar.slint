@@ -1,0 +1,146 @@
+import { TextEdit } from "std-widgets.slint";
+import { QuickPhrasePanel, PhraseItem } from "components/quick_phrases.slint";
+
+export { PhraseItem }
+
+export component InputBar inherits Rectangle {
+    in property <bool> sending: false;
+    in property <int> token-used: 0;
+    in property <int> token-max: 8192;
+    in property <float> token-ratio: 0.0;
+    in-out property <bool> parallel-mode: false;
+    in property <[PhraseItem]> phrases;
+    in-out property <bool> show-phrases: false;
+    callback send(string);
+    callback clear-context();
+    callback toggle-parallel();
+    callback phrase-selected(string);
+    callback phrase-deleted(string);
+
+    property <string> input-text: "";
+
+    height: 88px;
+    background: #111111;
+    border-color: #333333;
+    border-width: 1px;
+
+    VerticalLayout {
+        // token 进度条（在输入区上方）
+        Rectangle {
+            height: 4px;
+            background: #222;
+
+            Rectangle {
+                width: root.token-ratio * parent.width;
+                height: 4px;
+                x: 0;
+                background: root.token-ratio < 0.6 ? #22c55e
+                          : root.token-ratio < 0.85 ? #f59e0b
+                          : #ef4444;
+            }
+        }
+
+        HorizontalLayout {
+            padding: 12px;
+            spacing: 8px;
+
+            TextEdit {
+                text <=> root.input-text;
+                enabled: !root.sending;
+                placeholder-text: "输入消息，Enter 发送，Shift+Enter 换行，/ 快捷短语";
+                font-size: 14px;
+
+                key-pressed(event) => {
+                    if event.text == "/" {
+                        root.show-phrases = true;
+                    } else if event.text == "\n" && !event.modifiers.shift {
+                        root.show-phrases = false;
+                        if root.input-text != "" {
+                            root.send(root.input-text);
+                            root.input-text = "";
+                        }
+                        return accept;
+                    } else {
+                        root.show-phrases = false;
+                    }
+                    return reject;
+                }
+            }
+
+            // 对比按钮
+            Rectangle {
+                width: 52px;
+                background: root.parallel-mode ? #2563eb : #333333;
+                border-radius: 8px;
+
+                TouchArea {
+                    clicked => {
+                        root.toggle-parallel();
+                    }
+                }
+
+                Text {
+                    text: "对比";
+                    color: root.parallel-mode ? #ffffff : #aaaaaa;
+                    font-size: 13px;
+                    horizontal-alignment: center;
+                    vertical-alignment: center;
+                }
+            }
+
+            VerticalLayout {
+                width: 60px;
+                spacing: 4px;
+                alignment: center;
+
+                // token 数字显示
+                Text {
+                    text: root.token-used + "/" + root.token-max;
+                    color: #666666;
+                    font-size: 11px;
+                    horizontal-alignment: center;
+                }
+
+                // 发送按钮
+                Rectangle {
+                    height: 36px;
+                    background: root.sending ? #444444 : #2563eb;
+                    border-radius: 8px;
+
+                    TouchArea {
+                        enabled: !root.sending;
+                        clicked => {
+                            if root.input-text != "" {
+                                root.send(root.input-text);
+                                root.input-text = "";
+                            }
+                        }
+                    }
+
+                    Text {
+                        text: root.sending ? "..." : "发送";
+                        color: #ffffff;
+                        font-size: 13px;
+                        horizontal-alignment: center;
+                        vertical-alignment: center;
+                    }
+                }
+            }
+        }
+    }
+
+    // 快捷短语面板（浮在输入栏上方）
+    if root.show-phrases : QuickPhrasePanel {
+        phrases: root.phrases;
+        x: 12px;
+        y: - self.preferred-height - 4px;
+        select(content) => {
+            root.input-text = content;
+            root.show-phrases = false;
+            root.phrase-selected(content);
+        }
+        delete(id) => {
+            root.phrase-deleted(id);
+        }
+    }
+}

@@ -1,0 +1,63 @@
+export struct TopicItem {
+    id: string,
+    title: string,
+}
+
+export component Sidebar inherits Rectangle {
+    in property <[TopicItem]> topics;
+    in-out property <int> active-index: -1;
+    callback topic-selected(int);
+    callback new-topic();
+
+    width: 240px;
+    background: #111111;
+
+    VerticalLayout {
+        padding: 12px;
+        spacing: 4px;
+
+        // 新建对话按钮
+        Rectangle {
+            height: 36px;
+            background: #2563eb;
+            border-radius: 8px;
+
+            TouchArea {
+                clicked => { root.new-topic(); }
+            }
+
+            Text {
+                text: "+ 新建对话";
+                color: #ffffff;
+                font-size: 13px;
+                horizontal-alignment: center;
+                vertical-alignment: center;
+            }
+        }
+
+        Rectangle { height: 8px; }
+
+        // Topic 列表
+        for topic[i] in root.topics : Rectangle {
+            height: 36px;
+            background: root.active-index == i ? #2a2a3e : transparent;
+            border-radius: 6px;
+
+            TouchArea {
+                clicked => {
+                    root.active-index = i;
+                    root.topic-selected(i);
+                }
+            }
+
+            Text {
+                text: topic.title;
+                color: root.active-index == i ? #ffffff : #aaaaaa;
+                font-size: 13px;
+                overflow: elide;
+                padding-left: 10px;
+                vertical-alignment: center;
+            }
+        }
+    }
+}

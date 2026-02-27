@@ -1,0 +1,34 @@
+import { MarkdownView, MarkdownBlock, BlockType } from "markdown_view.slint";
+
+export struct MessageItem {
+    is-user: bool,
+    content: string,
+    blocks: [MarkdownBlock],
+}
+
+export component MessageBubble {
+    in property <MessageItem> message;
+
+    HorizontalLayout {
+        alignment: root.message.is-user ? end : start;
+        padding-left: root.message.is-user ? 60px : 0px;
+        padding-right: root.message.is-user ? 0px : 60px;
+
+        Rectangle {
+            background: root.message.is-user ? #2563eb : #1e1e2e;
+            border-radius: 12px;
+            padding: 12px;
+
+            if root.message.is-user : Text {
+                text: root.message.content;
+                wrap: word-wrap;
+                color: #ffffff;
+                font-size: 14px;
+            }
+
+            if !root.message.is-user : MarkdownView {
+                blocks: root.message.blocks;
+            }
+        }
+    }
+}

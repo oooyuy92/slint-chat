@@ -1,0 +1,30 @@
+import { MarkdownBlock, BlockType } from "components/markdown_view.slint";
+import { MessageItem } from "components/message_bubble.slint";
+import { TopicItem, Sidebar } from "sidebar.slint";
+import { ChatView } from "chat_view.slint";
+import { InputBar } from "input_bar.slint";
+
+export component AppWindow inherits Window {
+    title: "Slint Chat";
+    width: 1000px;
+    height: 700px;
+    background: #0d0d0d;
+
+    in-out property <[TopicItem]> topics <=> sidebar.topics;
+    in-out property <[MessageItem]> messages <=> chat.messages;
+    in property <bool> sending <=> input.sending;
+
+    callback new-topic <=> sidebar.new-topic;
+    callback topic-selected <=> sidebar.topic-selected;
+    callback send <=> input.send;
+
+    HorizontalLayout {
+        sidebar := Sidebar {}
+
+        VerticalLayout {
+            chat := ChatView {}
+
+            input := InputBar {}
+        }
+    }
+}

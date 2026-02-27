@@ -1,0 +1,92 @@
+import { MessageBubble, MessageItem } from "components/message_bubble.slint";
+import { ScrollView } from "std-widgets.slint";
+
+export component ChatView inherits Rectangle {
+    in property <[MessageItem]> messages;
+    in property <bool> parallel-mode: false;
+    in property <[MessageItem]> parallel-messages-b;
+
+    background: #0d0d0d;
+
+    if !root.parallel-mode : Rectangle {
+        background: #0d0d0d;
+
+        if root.messages.length == 0 : Text {
+            text: "开始一段对话";
+            color: #555555;
+            font-size: 16px;
+            horizontal-alignment: center;
+            vertical-alignment: center;
+        }
+
+        if root.messages.length > 0 : ScrollView {
+            VerticalLayout {
+                padding: 16px;
+                spacing: 12px;
+                alignment: start;
+
+                for msg in root.messages : MessageBubble {
+                    message: msg;
+                }
+            }
+        }
+    }
+
+    if root.parallel-mode : HorizontalLayout {
+        // Left column
+        Rectangle {
+            background: #0d0d0d;
+
+            if root.messages.length == 0 : Text {
+                text: "模型 A";
+                color: #555555;
+                font-size: 16px;
+                horizontal-alignment: center;
+                vertical-alignment: center;
+            }
+
+            if root.messages.length > 0 : ScrollView {
+                VerticalLayout {
+                    padding: 16px;
+                    spacing: 12px;
+                    alignment: start;
+
+                    for msg in root.messages : MessageBubble {
+                        message: msg;
+                    }
+                }
+            }
+        }
+
+        // Divider
+        Rectangle {
+            width: 1px;
+            background: #333333;
+        }
+
+        // Right column
+        Rectangle {
+            background: #0d0d0d;
+
+            if root.parallel-messages-b.length == 0 : Text {
+                text: "模型 B";
+                color: #555555;
+                font-size: 16px;
+                horizontal-alignment: center;
+                vertical-alignment: center;
+            }
+
+            if root.parallel-messages-b.length > 0 : ScrollView {
+                VerticalLayout {
+                    padding: 16px;
+                    spacing: 12px;
+                    alignment: start;
+
+                    for msg in root.parallel-messages-b : MessageBubble {
+                        message: msg;
+                    }
+                }
+            }
+        }
+    }
+}

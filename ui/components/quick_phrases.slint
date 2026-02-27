@@ -1,0 +1,90 @@
+export struct PhraseItem {
+    id: string,
+    name: string,
+    content: string,
+}
+
+export component QuickPhrasePanel inherits Rectangle {
+    in property <[PhraseItem]> phrases;
+    callback select(string);  // 传 content
+    callback delete(string);  // 传 id
+
+    width: 280px;
+    background: #1a1a2e;
+    border-radius: 8px;
+    border-width: 1px;
+    border-color: #333;
+
+    VerticalLayout {
+        padding: 8px;
+        spacing: 4px;
+
+        Text {
+            text: "快捷短语";
+            color: #888;
+            font-size: 11px;
+            padding-bottom: 4px;
+        }
+
+        if root.phrases.length == 0 : Text {
+            text: "暂无快捷短语";
+            color: #555;
+            font-size: 12px;
+            horizontal-alignment: center;
+        }
+
+        for phrase in root.phrases : HorizontalLayout {
+            spacing: 4px;
+
+            Rectangle {
+                background: transparent;
+                border-radius: 4px;
+                horizontal-stretch: 1;
+
+                TouchArea {
+                    clicked => { root.select(phrase.content); }
+                    mouse-cursor: pointer;
+                }
+
+                HorizontalLayout {
+                    padding: 6px;
+                    spacing: 6px;
+
+                    Text {
+                        text: "/" + phrase.name;
+                        color: #2563eb;
+                        font-size: 12px;
+                        font-weight: 600;
+                        width: 80px;
+                        overflow: elide;
+                    }
+
+                    Text {
+                        text: phrase.content;
+                        color: #aaa;
+                        font-size: 12px;
+                        overflow: elide;
+                        horizontal-stretch: 1;
+                    }
+                }
+            }
+
+            Rectangle {
+                width: 20px;
+                background: transparent;
+
+                TouchArea {
+                    clicked => { root.delete(phrase.id); }
+                }
+
+                Text {
+                    text: "×";
+                    color: #555;
+                    font-size: 14px;
+                    horizontal-alignment: center;
+                    vertical-alignment: center;
+                }
+            }
+        }
+    }
+}

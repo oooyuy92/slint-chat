@@ -1,0 +1,108 @@
+export enum BlockType {
+    Paragraph,
+    CodeBlock,
+    Heading1,
+    Heading2,
+    Heading3,
+    ListItem,
+    HorizontalRule,
+}
+
+export struct MarkdownBlock {
+    block-type: BlockType,
+    text: string,
+    lang: string,
+}
+
+export component MarkdownView {
+    in property <[MarkdownBlock]> blocks;
+
+    VerticalLayout {
+        spacing: 6px;
+        alignment: start;
+
+        for block[i] in root.blocks : Rectangle {
+            // --- 段落 ---
+            if block.block-type == BlockType.Paragraph : Text {
+                text: block.text;
+                wrap: word-wrap;
+                color: #d4d4d4;
+                font-size: 14px;
+            }
+
+            // --- H1 ---
+            if block.block-type == BlockType.Heading1 : Text {
+                text: block.text;
+                wrap: word-wrap;
+                color: #ffffff;
+                font-size: 22px;
+                font-weight: 700;
+            }
+
+            // --- H2 ---
+            if block.block-type == BlockType.Heading2 : Text {
+                text: block.text;
+                wrap: word-wrap;
+                color: #eeeeee;
+                font-size: 18px;
+                font-weight: 700;
+            }
+
+            // --- H3 ---
+            if block.block-type == BlockType.Heading3 : Text {
+                text: block.text;
+                wrap: word-wrap;
+                color: #dddddd;
+                font-size: 16px;
+                font-weight: 600;
+            }
+
+            // --- 列表项 ---
+            if block.block-type == BlockType.ListItem : HorizontalLayout {
+                spacing: 6px;
+                alignment: start;
+                Text { text: "•"; color: #888; font-size: 14px; }
+                Text {
+                    text: block.text;
+                    wrap: word-wrap;
+                    color: #d4d4d4;
+                    font-size: 14px;
+                }
+            }
+
+            // --- 代码块 ---
+            if block.block-type == BlockType.CodeBlock : Rectangle {
+                background: #1e1e2e;
+                border-radius: 6px;
+                border-width: 1px;
+                border-color: #333;
+
+                VerticalLayout {
+                    padding: 12px;
+                    spacing: 4px;
+
+                    // 语言标签（有 lang 时显示）
+                    if block.lang != "" : Text {
+                        text: block.lang;
+                        color: #888;
+                        font-size: 11px;
+                    }
+
+                    Text {
+                        text: block.text;
+                        font-family: "monospace";
+                        font-size: 13px;
+                        color: #cdd6f4;
+                        wrap: no-wrap;
+                    }
+                }
+            }
+
+            // --- 分割线 ---
+            if block.block-type == BlockType.HorizontalRule : Rectangle {
+                height: 1px;
+                background: #444;
+            }
+        }
+    }
+}
