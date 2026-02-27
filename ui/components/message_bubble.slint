@@ -18,6 +18,7 @@ export component MessageBubble {
             background: root.message.is-user ? #2563eb : #1e1e2e;
             border-radius: 12px;
             padding: 12px;
+            max-width: 480px;
 
             if root.message.is-user : Text {
                 text: root.message.content;
