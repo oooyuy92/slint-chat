@@ -22,21 +22,25 @@ export component QuickPhrasePanel inherits Rectangle {
         padding: 8px;
         spacing: 2px;
 
-        Text {
-            text: "快捷短语";
-            color: #9ca3af;
-            font-size: 11px;
+        HorizontalLayout {
             padding-left: 8px;
             padding-bottom: 4px;
+            Text {
+                text: "快捷短语";
+                color: #9ca3af;
+                font-size: 11px;
+            }
         }
 
-        if root.phrases.length == 0 : Text {
-            text: "暂无快捷短语";
-            color: #9ca3af;
-            font-size: 13px;
-            horizontal-alignment: center;
+        if root.phrases.length == 0 : VerticalLayout {
             padding-top: 8px;
             padding-bottom: 8px;
+            Text {
+                text: "暂无快捷短语";
+                color: #9ca3af;
+                font-size: 13px;
+                horizontal-alignment: center;
+            }
         }
 
         for phrase in root.phrases : HorizontalLayout {

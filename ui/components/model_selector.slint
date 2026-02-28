@@ -1,0 +1,83 @@
+import { ScrollView } from "std-widgets.slint";
+
+export struct ModelOption {
+    id: string,
+    name: string,
+    is-header: bool,
+}
+
+export component ModelSelectorPanel inherits Rectangle {
+    in property <[ModelOption]> models;
+    in property <string> selected-model;
+    callback model-selected(string);
+
+    width: 280px;
+    height: 420px;
+    background: #ffffff;
+    border-radius: 12px;
+    border-width: 1px;
+    border-color: #e0e0e0;
+    drop-shadow-blur: 16px;
+    drop-shadow-color: #00000018;
+    drop-shadow-offset-y: -4px;
+    clip: true;
+
+    ScrollView {
+        VerticalLayout {
+            padding: 4px;
+            spacing: 0px;
+
+            for item in root.models : VerticalLayout {
+                // Group header
+                if item.is-header : Rectangle {
+                    height: 32px;
+                    HorizontalLayout {
+                        padding-left: 12px;
+                        padding-top: 4px;
+                        alignment: start;
+                        Text {
+                            text: item.name;
+                            color: #9ca3af;
+                            font-size: 12px;
+                            font-weight: 600;
+                            vertical-alignment: center;
+                        }
+                    }
+                }
+
+                // Model item
+                if !item.is-header : item-ta := TouchArea {
+                    height: 36px;
+                    mouse-cursor: pointer;
+                    clicked => { root.model-selected(item.id); }
+
+                    Rectangle {
+                        background: item-ta.has-hover ? #f4f4f5 : transparent;
+                        border-radius: 6px;
+
+                        HorizontalLayout {
+                            padding-left: 12px;
+                            padding-right: 12px;
+
+                            Text {
+                                text: item.name;
+                                color: #0d0d0d;
+                                font-size: 13px;
+                                vertical-alignment: center;
+                                horizontal-stretch: 1;
+                            }
+
+                            if item.id == root.selected-model : Text {
+                                text: "✓";
+                                color: #0d0d0d;
+                                font-size: 14px;
+                                font-weight: 600;
+                                vertical-alignment: center;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

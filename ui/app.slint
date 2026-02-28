@@ -1,8 +1,10 @@
 import { MarkdownBlock, BlockType } from "components/markdown_view.slint";
 import { MessageItem } from "components/message_bubble.slint";
+import { ModelSelectorPanel, ModelOption } from "components/model_selector.slint";
 import { TopicItem, Sidebar } from "sidebar.slint";
 import { ChatView } from "chat_view.slint";
 import { InputBar } from "input_bar.slint";
+import { SettingsView } from "settings_view.slint";
 
 import "./fonts/NotoSansSC-subset.ttf";
 
@@ -16,18 +18,70 @@ export component AppWindow inherits Window {
     in-out property <[TopicItem]> topics <=> sidebar.topics;
     in-out property <[MessageItem]> messages <=> chat.messages;
     in property <bool> sending <=> input.sending;
+    in-out property <int> active-index <=> sidebar.active-index;
+
+    // Settings properties
+    in-out property <bool> show-settings: false;
+    in-out property <string> settings-api-key <=> settings-view.api-key;
+    in-out property <string> settings-api-base-url <=> settings-view.api-base-url;
+    in-out property <string> settings-model <=> settings-view.model;
+    in-out property <string> current-model <=> input.current-model;
+
+    // Model selector
+    in-out property <bool> show-model-selector: false;
+    in-out property <[ModelOption]> model-options;
+    callback model-selected(string);
 
     callback new-topic <=> sidebar.new-topic;
     callback topic-selected <=> sidebar.topic-selected;
     callback send <=> input.send;
+    callback save-settings <=> settings-view.save;
+    callback cancel-settings <=> settings-view.cancel;
+    callback open-settings <=> sidebar.open-settings;
 
     HorizontalLayout {
         sidebar := Sidebar {}
 
-        VerticalLayout {
-            chat := ChatView {}
+        Rectangle { width: 1px; background: #e5e5e5; }
 
-            input := InputBar {}
+        // Right panel: chat, settings, and model selector layered
+        Rectangle {
+            horizontal-stretch: 1;
+
+            VerticalLayout {
+                visible: !root.show-settings;
+                chat := ChatView { sending: root.sending; vertical-stretch: 1; }
+                input := InputBar {
+                    vertical-stretch: 0;
+                    toggle-model-selector => {
+                        root.show-model-selector = !root.show-model-selector;
+                    }
+                }
+            }
+
+            settings-view := SettingsView {
+                visible: root.show-settings;
+            }
+
+            // Model selector overlay
+            if root.show-model-selector : Rectangle {
+                // Transparent backdrop — click to close
+                TouchArea {
+                    clicked => { root.show-model-selector = false; }
+                }
+
+                // Selector panel — positioned above input bar
+                ModelSelectorPanel {
+                    x: 32px;
+                    y: parent.height - self.height - 124px;
+                    models: root.model-options;
+                    selected-model: root.current-model;
+                    model-selected(id) => {
+                        root.model-selected(id);
+                        root.show-model-selector = false;
+                    }
+                }
+            }
         }
     }
 }

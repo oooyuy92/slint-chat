@@ -3,6 +3,7 @@ import { ScrollView } from "std-widgets.slint";
 
 export component ChatView inherits Rectangle {
     in property <[MessageItem]> messages;
+    in property <bool> sending: false;
     in property <bool> parallel-mode: false;
     in property <[MessageItem]> parallel-messages-b;
 
@@ -32,15 +33,16 @@ export component ChatView inherits Rectangle {
 
         if root.messages.length > 0 : ScrollView {
             VerticalLayout {
+                padding-top: 32px;
+                padding-bottom: 32px;
                 padding-left: 24px;
                 padding-right: 24px;
-                padding-top: 24px;
-                padding-bottom: 24px;
                 spacing: 24px;
                 alignment: start;
 
-                for msg in root.messages : MessageBubble {
+                for msg[i] in root.messages : MessageBubble {
                     message: msg;
+                    is-streaming: root.sending && !msg.is-user && i == root.messages.length - 1;
                 }
             }
         }

@@ -8,31 +8,18 @@ export component Sidebar inherits Rectangle {
     in-out property <int> active-index: -1;
     callback topic-selected(int);
     callback new-topic();
+    callback open-settings();
 
-    width: 260px;
+    width: 240px;
     background: #f9f9f9;
 
     VerticalLayout {
         padding: 8px;
         spacing: 2px;
 
-        // Header
-        Rectangle {
-            height: 48px;
-            HorizontalLayout {
-                padding-left: 12px;
-                Text {
-                    text: "Slint Chat";
-                    color: #0d0d0d;
-                    font-size: 15px;
-                    font-weight: 600;
-                }
-            }
-        }
-
         // New chat button
         new-btn-ta := TouchArea {
-            height: 40px;
+            height: 44px;
             clicked => { root.new-topic(); }
 
             Rectangle {
@@ -50,7 +37,7 @@ export component Sidebar inherits Rectangle {
                         vertical-alignment: center;
                     }
                     Text {
-                        text: "新建对话";
+                        text: "新对话";
                         color: #0d0d0d;
                         font-size: 14px;
                         vertical-alignment: center;
@@ -59,15 +46,7 @@ export component Sidebar inherits Rectangle {
             }
         }
 
-        Rectangle { height: 4px; }
-
-        Text {
-            text: "最近对话";
-            color: #9ca3af;
-            font-size: 11px;
-            padding-left: 12px;
-            padding-bottom: 2px;
-        }
+        Rectangle { height: 8px; }
 
         for topic[i] in root.topics : item-ta := TouchArea {
             height: 36px;
@@ -82,14 +61,48 @@ export component Sidebar inherits Rectangle {
                           : transparent;
                 border-radius: 8px;
 
-                Text {
-                    text: topic.title;
-                    color: #0d0d0d;
-                    font-size: 14px;
-                    overflow: elide;
+                HorizontalLayout {
                     padding-left: 12px;
                     padding-right: 8px;
-                    vertical-alignment: center;
+                    Text {
+                        text: topic.title;
+                        color: #0d0d0d;
+                        font-size: 14px;
+                        overflow: elide;
+                        vertical-alignment: center;
+                    }
+                }
+            }
+        }
+
+        // Spacer to push settings to bottom
+        Rectangle { vertical-stretch: 1; }
+
+        // Settings button
+        settings-ta := TouchArea {
+            height: 40px;
+            clicked => { root.open-settings(); }
+
+            Rectangle {
+                background: settings-ta.has-hover ? #efefef : transparent;
+                border-radius: 8px;
+
+                HorizontalLayout {
+                    padding-left: 12px;
+                    spacing: 10px;
+
+                    Text {
+                        text: "⚙";
+                        font-size: 15px;
+                        color: #6e6e80;
+                        vertical-alignment: center;
+                    }
+                    Text {
+                        text: "设置";
+                        color: #6e6e80;
+                        font-size: 14px;
+                        vertical-alignment: center;
+                    }
                 }
             }
         }

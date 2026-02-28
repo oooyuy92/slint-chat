@@ -1,0 +1,66 @@
+export component ReasoningView inherits VerticalLayout {
+    in property <string> content;
+    in property <bool> is-streaming: false;
+    in-out property <bool> expanded: false;
+
+    // Show when there's content or actively streaming
+    if root.content != "" || root.is-streaming : VerticalLayout {
+        spacing: 0px;
+
+        // Trigger header
+        trigger-ta := TouchArea {
+            height: 32px;
+            clicked => {
+                root.expanded = !root.expanded;
+            }
+
+            HorizontalLayout {
+                spacing: 6px;
+                alignment: start;
+
+                // Chevron
+                Text {
+                    text: root.expanded || root.is-streaming ? "▼" : "▶";
+                    font-size: 11px;
+                    color: #9ca3af;
+                    vertical-alignment: center;
+                }
+
+                // Label with breathing animation when streaming
+                Text {
+                    text: root.is-streaming ? "思考中…" : "思考过程";
+                    font-size: 13px;
+                    color: #9ca3af;
+                    vertical-alignment: center;
+                    opacity: root.is-streaming
+                        ? 0.4 + 0.6 * (0.5 + 0.5 * Math.sin(animation-tick() / 1ms * 0.18deg))
+                        : 1.0;
+                }
+            }
+        }
+
+        // Collapsible content (visible when expanded or streaming)
+        if root.expanded || root.is-streaming : HorizontalLayout {
+            spacing: 0px;
+
+            // Left border line
+            Rectangle {
+                width: 2px;
+                background: #e5e7eb;
+            }
+
+            VerticalLayout {
+                padding-left: 10px;
+                padding-top: 4px;
+                padding-bottom: 8px;
+
+                Text {
+                    text: root.content;
+                    wrap: word-wrap;
+                    color: #6b7280;
+                    font-size: 13px;
+                }
+            }
+        }
+    }
+}

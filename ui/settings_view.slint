@@ -1,0 +1,137 @@
+import { LineEdit } from "std-widgets.slint";
+
+export component SettingsView inherits Rectangle {
+    in-out property <string> api-key;
+    in-out property <string> api-base-url;
+    in-out property <string> model;
+    callback save();
+    callback cancel();
+
+    background: #ffffff;
+
+    VerticalLayout {
+        alignment: start;
+        padding: 48px;
+        padding-top: 40px;
+        spacing: 32px;
+
+        Text {
+            text: "设置";
+            font-size: 24px;
+            font-weight: 700;
+            color: #0d0d0d;
+        }
+
+        // API Key
+        VerticalLayout {
+            spacing: 6px;
+            Text {
+                text: "API Key";
+                font-size: 14px;
+                font-weight: 600;
+                color: #374151;
+            }
+            Text {
+                text: "用于验证 API 请求的密钥";
+                font-size: 13px;
+                color: #9ca3af;
+            }
+            LineEdit {
+                text <=> root.api-key;
+                placeholder-text: "sk-...";
+                font-size: 14px;
+                height: 40px;
+            }
+        }
+
+        // API Base URL
+        VerticalLayout {
+            spacing: 6px;
+            Text {
+                text: "API Base URL";
+                font-size: 14px;
+                font-weight: 600;
+                color: #374151;
+            }
+            Text {
+                text: "API 服务的基础地址，支持 OpenAI 兼容接口";
+                font-size: 13px;
+                color: #9ca3af;
+            }
+            LineEdit {
+                text <=> root.api-base-url;
+                placeholder-text: "https://api.openai.com/v1";
+                font-size: 14px;
+                height: 40px;
+            }
+        }
+
+        // Model
+        VerticalLayout {
+            spacing: 6px;
+            Text {
+                text: "模型";
+                font-size: 14px;
+                font-weight: 600;
+                color: #374151;
+            }
+            Text {
+                text: "使用的语言模型名称";
+                font-size: 13px;
+                color: #9ca3af;
+            }
+            LineEdit {
+                text <=> root.model;
+                placeholder-text: "gpt-4o";
+                font-size: 14px;
+                height: 40px;
+            }
+        }
+
+        // Buttons
+        HorizontalLayout {
+            spacing: 12px;
+            alignment: start;
+
+            save-ta := TouchArea {
+                width: 80px;
+                height: 40px;
+                clicked => { root.save(); }
+
+                Rectangle {
+                    background: save-ta.has-hover ? #1a1a1a : #0d0d0d;
+                    border-radius: 8px;
+                    Text {
+                        text: "保存";
+                        color: #ffffff;
+                        font-size: 14px;
+                        font-weight: 500;
+                        horizontal-alignment: center;
+                        vertical-alignment: center;
+                    }
+                }
+            }
+
+            cancel-ta := TouchArea {
+                width: 80px;
+                height: 40px;
+                clicked => { root.cancel(); }
+
+                Rectangle {
+                    border-width: 1px;
+                    border-color: #d1d5db;
+                    border-radius: 8px;
+                    background: cancel-ta.has-hover ? #f9f9f9 : #ffffff;
+                    Text {
+                        text: "取消";
+                        color: #374151;
+                        font-size: 14px;
+                        font-weight: 500;
+                        horizontal-alignment: center;
+                        vertical-alignment: center;
+                    }
+                }
+            }
+        }
+    }
+}

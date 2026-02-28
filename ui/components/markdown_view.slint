@@ -18,21 +18,22 @@ export component MarkdownView {
     in property <[MarkdownBlock]> blocks;
 
     VerticalLayout {
-        spacing: 8px;
+        spacing: 10px;
         alignment: start;
 
-        for block[i] in root.blocks : Rectangle {
+        for block[i] in root.blocks : VerticalLayout {
             if block.block-type == BlockType.Paragraph : Text {
                 text: block.text;
                 wrap: word-wrap;
-                color: #374151;
+                color: #0d0d0d;
                 font-size: 15px;
+
             }
 
             if block.block-type == BlockType.Heading1 : Text {
                 text: block.text;
                 wrap: word-wrap;
-                color: #111827;
+                color: #0d0d0d;
                 font-size: 22px;
                 font-weight: 700;
             }
@@ -40,7 +41,7 @@ export component MarkdownView {
             if block.block-type == BlockType.Heading2 : Text {
                 text: block.text;
                 wrap: word-wrap;
-                color: #1f2937;
+                color: #0d0d0d;
                 font-size: 18px;
                 font-weight: 700;
             }
@@ -48,7 +49,7 @@ export component MarkdownView {
             if block.block-type == BlockType.Heading3 : Text {
                 text: block.text;
                 wrap: word-wrap;
-                color: #374151;
+                color: #0d0d0d;
                 font-size: 16px;
                 font-weight: 600;
             }
@@ -56,36 +57,35 @@ export component MarkdownView {
             if block.block-type == BlockType.ListItem : HorizontalLayout {
                 spacing: 8px;
                 alignment: start;
-                Text { text: "•"; color: #6b7280; font-size: 15px; }
+                Text { text: "•"; color: #0d0d0d; font-size: 15px; }
                 Text {
                     text: block.text;
                     wrap: word-wrap;
-                    color: #374151;
+                    color: #0d0d0d;
                     font-size: 15px;
+    
                 }
             }
 
             if block.block-type == BlockType.CodeBlock : Rectangle {
-                background: #f4f4f4;
+                background: #1e1e1e;
                 border-radius: 8px;
-                border-width: 1px;
-                border-color: #e5e5e5;
 
                 VerticalLayout {
-                    padding: 14px;
-                    spacing: 4px;
+                    padding: 16px;
+                    spacing: 6px;
 
                     if block.lang != "" : Text {
                         text: block.lang;
-                        color: #9ca3af;
-                        font-size: 11px;
+                        color: #8b8b8b;
+                        font-size: 12px;
                     }
 
                     Text {
                         text: block.text;
                         font-family: "monospace";
                         font-size: 13px;
-                        color: #1f2937;
+                        color: #d4d4d4;
                         wrap: no-wrap;
                     }
                 }
